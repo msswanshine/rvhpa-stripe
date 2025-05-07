@@ -11,7 +11,7 @@
   },
   "scripts": {
     "build": "remix vite:build",
-    "dev": "node ./server.mjs",
+    "dev": "node ./server.mjs --experimental-global-webcrypto",
     "format": "prettier --write .",
     "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
     "start": "cross-env NODE_ENV=production node ./server.mjs",

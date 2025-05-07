@@ -6,6 +6,7 @@ import compression from 'compression'
 import morgan from 'morgan'
 import helmet from 'helmet'
 import rateLimit from 'express-rate-limit'
+import process from 'process'
 
 // Info about Single Fetch and `installGlobals`:
 // https://remix.run/docs/en/main/guides/single-fetch#enabling-single-fetch
