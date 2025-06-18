@@ -108,7 +108,7 @@ export async function action(args: ActionFunctionArgs) {
         authError = { message: 'Access denied' }
       }
 
-      let cookie = await getSession(args.request.headers.get('Cookie'))
+      const cookie = await getSession(args.request.headers.get('Cookie'))
       cookie.set(authenticator.sessionErrorKey, authError)
 
       return redirect(pathname, {

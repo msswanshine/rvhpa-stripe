@@ -1,5 +1,5 @@
 import type { ClassValue } from 'clsx'
-import type { LoaderData as RootLoaderData } from '#app/root'
+import type { loader } from '#app/root'
 import { useFormAction, useNavigation, useRouteLoaderData } from '@remix-run/react'
 import { clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
@@ -15,6 +15,8 @@ export function cn(...inputs: ClassValue[]) {
 /**
  * Use root-loader data.
  */
+type RootLoaderData = Awaited<ReturnType<typeof loader>>
+
 function isUser(user: RootLoaderData['data']['user']) {
   return user && typeof user === 'object' && typeof user.id === 'string'
 }
@@ -42,7 +44,7 @@ export function userHasRole(
   role: RoleName,
 ) {
   if (!user) return false
-  return user.roles.some((r) => r.name === role)
+  return user.roles.some((r: { name: string }) => r.name === role)
 }
 
 /**

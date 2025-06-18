@@ -42,10 +42,3 @@ export function getSharedEnvs() {
     PROD_HOST_URL: process.env.PROD_HOST_URL,
   }
 }
-
-declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace NodeJS {
-    interface ProcessEnv extends z.infer<typeof schema> {}
-  }
-}
