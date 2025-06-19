@@ -64,7 +64,7 @@ export default function Index() {
         </Link>
         <div className="flex items-center gap-4">
           <Link to={LOGIN_PATH} className={cn(buttonVariants({ size: 'sm' }), 'h-8')}>
-            {user ? 'Dashboard' : 'Get Started'}
+            {user ? 'Membership' : 'Get Started'}
           </Link>
         </div>
       </nav>

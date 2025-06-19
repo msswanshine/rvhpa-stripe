@@ -32,6 +32,12 @@ export default function DashboardIndex() {
               <p className="text-sm font-normal text-primary/60">
                 Explore the Dashboard and get started with your first app.
               </p>
+              <h3 className="text-sm font-medium text-primary">TODO List</h3>
+              <ul>
+                <li>• USHPA Information</li>
+                <li>• Current membership status, with animated checkmarks</li>
+                <li>• Current weather conditions</li>
+              </ul>
             </div>
           </div>
           <div className="flex w-full px-6">

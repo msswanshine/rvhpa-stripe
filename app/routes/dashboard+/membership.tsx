@@ -1,12 +1,9 @@
 import type { MetaFunction, LoaderFunctionArgs } from '@remix-run/node'
-import { Link, Outlet, useLocation } from '@remix-run/react'
+import { Outlet } from '@remix-run/react'
 import { z } from 'zod'
 import { requireUser } from '#app/modules/auth/auth.server'
-import { cn } from '#app/utils/misc'
-import { ROUTE_PATH as MEMBERSHIP_PATH } from '#app/routes/dashboard+/membership'
-import { buttonVariants } from '#app/components/ui/button'
 
-export const ROUTE_PATH = '/dashboard/settings' as const
+export const ROUTE_PATH = '/dashboard/membership' as const
 
 export const UsernameSchema = z.object({
   username: z
@@ -19,7 +16,7 @@ export const UsernameSchema = z.object({
 })
 
 export const meta: MetaFunction = () => {
-  return [{ title: 'Settings' }]
+  return [{ title: 'Membership' }]
 }
 
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -27,30 +24,14 @@ export async function loader({ request }: LoaderFunctionArgs) {
   return { user }
 }
 
-export default function DashboardSettings() {
-  const location = useLocation()
-  const isSettingsPath = location.pathname === ROUTE_PATH
-  const isMembershipPath = location.pathname === MEMBERSHIP_PATH
+export default function DashboardMembership() {
 
   return (
     <div className="flex h-full w-full px-6 py-8">
       <div className="mx-auto flex h-full w-full max-w-screen-xl gap-12">
-        <div className="hidden w-full max-w-64 flex-col gap-0.5 lg:flex">
+        {/* <div className="hidden w-full max-w-64 flex-col gap-0.5 lg:flex">
           <Link
             to={ROUTE_PATH}
-            prefetch="intent"
-            className={cn(
-              `${buttonVariants({ variant: 'ghost' })} ${isSettingsPath && 'bg-primary/5'} justify-start rounded-md`,
-            )}>
-            <span
-              className={cn(
-                `text-sm text-primary/80 ${isSettingsPath && 'font-medium text-primary'}`,
-              )}>
-              General
-            </span>
-          </Link>
-          <Link
-            to={MEMBERSHIP_PATH}
             prefetch="intent"
             className={cn(
               `${buttonVariants({ variant: 'ghost' })} ${isMembershipPath && 'bg-primary/5'} justify-start rounded-md`,
@@ -59,10 +40,23 @@ export default function DashboardSettings() {
               className={cn(
                 `text-sm text-primary/80 ${isMembershipPath && 'font-medium text-primary'}`,
               )}>
+              General
+            </span>
+          </Link>
+          <Link
+            to={BILLING_PATH}
+            prefetch="intent"
+            className={cn(
+              `${buttonVariants({ variant: 'ghost' })} ${isBillingPath && 'bg-primary/5'} justify-start rounded-md`,
+            )}>
+            <span
+              className={cn(
+                `text-sm text-primary/80 ${isBillingPath && 'font-medium text-primary'}`,
+              )}>
               Billing
             </span>
           </Link>
-        </div>
+        </div> */}
 
         <Outlet />
       </div>

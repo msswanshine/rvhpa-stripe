@@ -10,14 +10,13 @@ import {
   LogOut,
   Star,
 } from 'lucide-react'
-import { PLANS } from '#app/modules/stripe/plans'
 import { useRequestInfo } from '#app/utils/hooks/use-request-info'
 import { userHasRole, getUserImgSrc, cn } from '#app/utils/misc'
 import { ROUTE_PATH as LOGOUT_PATH } from '#app/routes/auth+/logout'
 import { ROUTE_PATH as ADMIN_PATH } from '#app/routes/admin+/_layout'
 import { ROUTE_PATH as DASHBOARD_PATH } from '#app/routes/dashboard+/_layout'
 import { ROUTE_PATH as DASHBOARD_SETTINGS_PATH } from '#app/routes/dashboard+/settings'
-import { ROUTE_PATH as DASHBOARD_SETTINGS_BILLING_PATH } from '#app/routes/dashboard+/settings.billing'
+import { ROUTE_PATH as DASHBOARD_MEMBERSHIP_PATH } from '#app/routes/dashboard+/membership'
 import { ThemeSwitcher } from '#app/components/misc/theme-switcher'
 import { LanguageSwitcher } from '#app/components/misc/language-switcher'
 import {
@@ -45,7 +44,7 @@ export function Navigation({ user, planId }: NavigationProps) {
   const isAdminPath = location.pathname === ADMIN_PATH
   const isDashboardPath = location.pathname === DASHBOARD_PATH
   const isSettingsPath = location.pathname === DASHBOARD_SETTINGS_PATH
-  const isBillingPath = location.pathname === DASHBOARD_SETTINGS_BILLING_PATH
+  const isMembershipPath = location.pathname === DASHBOARD_MEMBERSHIP_PATH
 
   return (
     <nav className="sticky top-0 z-50 flex w-full flex-col border-b border-border bg-card px-6">
@@ -111,7 +110,7 @@ export function Navigation({ user, planId }: NavigationProps) {
                 <Check className="h-[18px] w-[18px] stroke-[1.5px] text-primary/60" />
               </DropdownMenuItem>
 
-              {planId && planId === PLANS.FREE && (
+              {/* {planId && planId === PLANS.FREE && (
                 <>
                   <DropdownMenuSeparator className="mx-0 my-2" />
                   <DropdownMenuItem className="p-0 focus:bg-transparent">
@@ -123,7 +122,7 @@ export function Navigation({ user, planId }: NavigationProps) {
                     </Button>
                   </DropdownMenuItem>
                 </>
-              )}
+              )} */}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -256,14 +255,14 @@ export function Navigation({ user, planId }: NavigationProps) {
           </Link>
         </div>
         <div
-          className={`flex h-12 items-center border-b-2 ${isBillingPath ? 'border-primary' : 'border-transparent'}`}>
+          className={`flex h-12 items-center border-b-2 ${isMembershipPath ? 'border-primary' : 'border-transparent'}`}>
           <Link
-            to={DASHBOARD_SETTINGS_BILLING_PATH}
+            to={DASHBOARD_MEMBERSHIP_PATH}
             prefetch="intent"
             className={cn(
               `${buttonVariants({ variant: 'ghost', size: 'sm' })} text-primary/80`,
             )}>
-            Billing
+            Membership
           </Link>
         </div>
       </div>
