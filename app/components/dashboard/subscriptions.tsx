@@ -19,7 +19,7 @@ import { INTENTS } from '#app/utils/constants/misc'
 import { ROUTE_PATH as LOGIN_PATH } from '#app/routes/auth+/login'
 import { Button } from '#app/components/ui/button'
 
-export const ROUTE_PATH = '/dashboard/settings/billing' as const
+export const ROUTE_PATH = '/dashboard/membership' as const
 
 export const meta: MetaFunction = () => {
   return [{ title: 'Remix SaaS - Billing' }]
