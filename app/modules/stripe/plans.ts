@@ -7,6 +7,8 @@ import type { Price } from '@prisma/client'
 export const PLANS = {
   FREE: 'free',
   PRO: 'pro',
+  LOCAL: 'local',
+  VISITING: 'visiting',
 } as const
 
 export type Plan = (typeof PLANS)[keyof typeof PLANS]
@@ -15,7 +17,6 @@ export type Plan = (typeof PLANS)[keyof typeof PLANS]
  * Enumerates billing intervals for subscription plans.
  */
 export const INTERVALS = {
-  MONTH: 'month',
   YEAR: 'year',
 } as const
 
@@ -47,10 +48,6 @@ export const PRICING_PLANS = {
     name: 'Free',
     description: 'Start with the basics, upgrade anytime.',
     prices: {
-      [INTERVALS.MONTH]: {
-        [CURRENCIES.USD]: 0,
-        [CURRENCIES.EUR]: 0,
-      },
       [INTERVALS.YEAR]: {
         [CURRENCIES.USD]: 0,
         [CURRENCIES.EUR]: 0,
@@ -62,16 +59,36 @@ export const PRICING_PLANS = {
     name: 'Pro',
     description: 'Access to all features and unlimited projects.',
     prices: {
-      [INTERVALS.MONTH]: {
+      [INTERVALS.YEAR]: {
         [CURRENCIES.USD]: 1990,
         [CURRENCIES.EUR]: 1990,
       },
+    },
+  },
+  [PLANS.LOCAL]: {
+    id: PLANS.LOCAL,
+    name: 'Local',
+    description: 'Access to our local club chat and voting rights.',
+    prices: {
       [INTERVALS.YEAR]: {
-        [CURRENCIES.USD]: 19990,
-        [CURRENCIES.EUR]: 19990,
+        [CURRENCIES.USD]: 8500,
+        [CURRENCIES.EUR]: 8500,
       },
     },
   },
+  [PLANS.VISITING]: {
+    id: PLANS.VISITING,
+    name: 'Visiting',
+    description: 'Access to all features and unlimited projects.',
+    prices: {
+      [INTERVALS.YEAR]: {
+        [CURRENCIES.USD]: 3500,
+        [CURRENCIES.EUR]: 3500,
+      },
+    },
+  },
+
+
 } satisfies PricingPlan
 
 /**
@@ -85,6 +102,7 @@ type PriceInterval<I extends Interval = Interval, C extends Currency = Currency>
 
 /**
  * A type helper defining the structure for subscription pricing plans.
+ * All plans use yearly billing intervals.
  */
 type PricingPlan<T extends Plan = Plan> = {
   [key in T]: {

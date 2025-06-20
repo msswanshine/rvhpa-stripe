@@ -1,7 +1,12 @@
 import type { MetaFunction, LoaderFunctionArgs } from '@remix-run/node'
 import { Outlet } from '@remix-run/react'
 import { z } from 'zod'
-import { requireUser } from '#app/modules/auth/auth.server'
+import { requireUser, requireSessionUser } from '#app/modules/auth/auth.server'
+import DashboardBilling from '#app/components/dashboard/subscriptions'
+import { ROUTE_PATH as LOGIN_PATH } from '#app/routes/auth+/login'
+import { INTENTS } from '#app/utils/constants/misc'
+import { createSubscriptionCheckout, createCustomerPortal } from '#app/modules/stripe/queries.server'
+import { redirect, ActionFunctionArgs } from '@remix-run/node'
 
 export const ROUTE_PATH = '/dashboard/membership' as const
 
@@ -17,6 +22,37 @@ export const UsernameSchema = z.object({
 
 export const meta: MetaFunction = () => {
   return [{ title: 'Membership' }]
+}
+
+export async function action({ request }: ActionFunctionArgs) {
+  const sessionUser = await requireSessionUser(request, {
+    redirectTo: LOGIN_PATH,
+  })
+
+  const formData = await request.formData()
+  const intent = formData.get(INTENTS.INTENT)
+
+  if (intent === INTENTS.SUBSCRIPTION_CREATE_CHECKOUT) {
+    const planId = String(formData.get('planId'))
+    const planInterval = String(formData.get('planInterval'))
+    const checkoutUrl = await createSubscriptionCheckout({
+      userId: sessionUser.id,
+      planId,
+      planInterval,
+      request,
+    })
+    if (!checkoutUrl) return { success: false }
+    return redirect(checkoutUrl)
+  }
+  if (intent === INTENTS.SUBSCRIPTION_CREATE_CUSTOMER_PORTAL) {
+    const customerPortalUrl = await createCustomerPortal({
+      userId: sessionUser.id,
+    })
+    if (!customerPortalUrl) return { success: false }
+    return redirect(customerPortalUrl)
+  }
+
+  return {}
 }
 
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -57,8 +93,8 @@ export default function DashboardMembership() {
             </span>
           </Link>
         </div> */}
-
         <Outlet />
+        <DashboardBilling />
       </div>
     </div>
   )
