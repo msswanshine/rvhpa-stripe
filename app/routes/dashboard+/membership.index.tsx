@@ -220,9 +220,9 @@ export default function DashboardMembership() {
         {...getFormProps(form)}>
         <div className="flex w-full flex-col gap-4 rounded-lg p-6">
           <div className="flex flex-col gap-2">
-            <h2 className="text-xl font-medium text-primary">Your Username</h2>
+            <h2 className="text-xl font-medium text-primary">Your Information</h2>
             <p className="text-sm font-normal text-primary/60">
-              BANANAS! This is your username. It will be displayed on your profile.
+              BANANAS! Update your information here.
             </p>
           </div>
           <Input
