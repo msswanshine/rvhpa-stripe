@@ -37,6 +37,9 @@ export const ProfileSchema = z.object({
     .min(1)
     .max(50, 'First name must be 50 characters or less.')
     .trim(),
+  ushpaId: z
+    .string({ required_error: 'Ushpa ID is required.' })
+    .regex(/^[0-9]+$/, 'Ushpa ID may only contain numbers.'),
 })
 
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -57,7 +60,7 @@ export async function action({ request }: ActionFunctionArgs) {
       })
     }
 
-    const { username, firstName } = submission.value
+    const { username, firstName, ushpaId } = submission.value
 
     const isMyCurrentUsername = user.username === username
 
@@ -74,7 +77,7 @@ export async function action({ request }: ActionFunctionArgs) {
       }
     }
 
-    await prisma.user.update({ where: { id: user.id }, data: { username, firstName } })
+    await prisma.user.update({ where: { id: user.id }, data: { username, firstName, ushpaId } })
     return data(submission.reply({ fieldErrors: {} }), {
       headers: await createToastHeaders({
         title: 'Success!',
@@ -108,7 +111,7 @@ export default function DashboardMembership() {
 
   const { doubleCheck, getButtonProps } = useDoubleCheck()
 
-  const [form, { username, firstName }] = useForm({
+  const [form, { username, firstName, ushpaId }] = useForm({
     lastResult,
     constraint: getZodConstraint(ProfileSchema),
     onValidate({ formData }) {
@@ -235,6 +238,21 @@ export default function DashboardMembership() {
           {username.errors && (
             <p className="text-sm text-destructive dark:text-destructive-foreground">
               {username.errors.join(' ')}
+            </p>
+          )}
+          <Input
+            placeholder="Ushpa ID"
+            autoComplete="off"
+            defaultValue={user?.ushpaId ?? ''}
+            required
+            className={`w-80 bg-transparent ${
+              ushpaId.errors && 'border-destructive focus-visible:ring-destructive'
+            }`}
+            {...getInputProps(ushpaId, { type: 'text' })}
+          />
+          {ushpaId.errors && (
+            <p className="text-sm text-destructive dark:text-destructive-foreground">
+              {ushpaId.errors.join(' ')}
             </p>
           )}
           <Input
