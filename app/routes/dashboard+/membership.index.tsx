@@ -24,7 +24,7 @@ import {
 } from '#app/routes/resources+/upload-image'
 import { ROUTE_PATH as RESET_IMAGE_PATH } from '#app/routes/resources+/reset-image'
 
-export const UsernameSchema = z.object({
+export const ProfileSchema = z.object({
   username: z
     .string()
     .min(3)
@@ -32,6 +32,11 @@ export const UsernameSchema = z.object({
     .toLowerCase()
     .trim()
     .regex(/^[a-zA-Z0-9]+$/, 'Username may only contain alphanumeric characters.'),
+  firstName: z
+    .string({ required_error: 'First name is required.' })
+    .min(1)
+    .max(50, 'First name must be 50 characters or less.')
+    .trim(),
 })
 
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -44,28 +49,32 @@ export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.clone().formData()
   const intent = formData.get(INTENTS.INTENT)
 
-  if (intent === INTENTS.USER_UPDATE_USERNAME) {
-    const submission = parseWithZod(formData, { schema: UsernameSchema })
+  if (intent === INTENTS.USER_UPDATE_PROFILE) {
+    const submission = parseWithZod(formData, { schema: ProfileSchema })
     if (submission.status !== 'success') {
       return data(submission.reply(), {
         status: submission.status === 'error' ? 400 : 200,
       })
     }
 
-    const { username } = submission.value
-    const isUsernameTaken = await prisma.user.findUnique({ where: { username } })
+    const { username, firstName } = submission.value
 
-    if (isUsernameTaken) {
-      return data(
-        submission.reply({
-          fieldErrors: {
-            username: [ERRORS.ONBOARDING_USERNAME_ALREADY_EXISTS],
-          },
-        }),
-      )
+    const isMyCurrentUsername = user.username === username
+
+    if (!isMyCurrentUsername) {
+      const isUsernameTaken = await prisma.user.findUnique({ where: { username } })
+      if (isUsernameTaken) {
+        return data(
+          submission.reply({
+            fieldErrors: {
+              username: [ERRORS.ONBOARDING_USERNAME_ALREADY_EXISTS],
+            },
+          }),
+        )
+      }
     }
 
-    await prisma.user.update({ where: { id: user.id }, data: { username } })
+    await prisma.user.update({ where: { id: user.id }, data: { username, firstName } })
     return data(submission.reply({ fieldErrors: {} }), {
       headers: await createToastHeaders({
         title: 'Success!',
@@ -99,11 +108,11 @@ export default function DashboardMembership() {
 
   const { doubleCheck, getButtonProps } = useDoubleCheck()
 
-  const [form, { username }] = useForm({
+  const [form, { username, firstName }] = useForm({
     lastResult,
-    constraint: getZodConstraint(UsernameSchema),
+    constraint: getZodConstraint(ProfileSchema),
     onValidate({ formData }) {
-      return parseWithZod(formData, { schema: UsernameSchema })
+      return parseWithZod(formData, { schema: ProfileSchema })
     },
   })
   const [avatarForm, avatarFields] = useForm({
@@ -210,7 +219,7 @@ export default function DashboardMembership() {
           <div className="flex flex-col gap-2">
             <h2 className="text-xl font-medium text-primary">Your Username</h2>
             <p className="text-sm font-normal text-primary/60">
-              This is your username. It will be displayed on your profile.
+              BANANAS! This is your username. It will be displayed on your profile.
             </p>
           </div>
           <Input
@@ -228,6 +237,21 @@ export default function DashboardMembership() {
               {username.errors.join(' ')}
             </p>
           )}
+          <Input
+            placeholder="First Name"
+            autoComplete="off"
+            defaultValue={user?.firstName ?? ''}
+            required
+            className={`w-80 bg-transparent ${
+              username.errors && 'border-destructive focus-visible:ring-destructive'
+            }`}
+            {...getInputProps(firstName, { type: 'text' })}
+          />
+          {firstName.errors && (
+            <p className="text-sm text-destructive dark:text-destructive-foreground">
+              {firstName.errors.join(' ')}
+            </p>
+          )}
         </div>
         <div className="flex min-h-14 w-full items-center justify-between rounded-lg rounded-t-none border-t border-border bg-secondary px-6 dark:bg-card">
           <p className="text-sm font-normal text-primary/60">
@@ -237,7 +261,7 @@ export default function DashboardMembership() {
             type="submit"
             size="sm"
             name={INTENTS.INTENT}
-            value={INTENTS.USER_UPDATE_USERNAME}>
+            value={INTENTS.USER_UPDATE_PROFILE}>
             Save
           </Button>
         </div>

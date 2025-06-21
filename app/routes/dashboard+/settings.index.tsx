@@ -44,7 +44,7 @@ export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.clone().formData()
   const intent = formData.get(INTENTS.INTENT)
 
-  if (intent === INTENTS.USER_UPDATE_USERNAME) {
+  if (intent === INTENTS.USER_UPDATE_PROFILE) {
     const submission = parseWithZod(formData, { schema: UsernameSchema })
     if (submission.status !== 'success') {
       return data(submission.reply(), {
@@ -236,7 +236,7 @@ export default function DashboardSettings() {
             type="submit"
             size="sm"
             name={INTENTS.INTENT}
-            value={INTENTS.USER_UPDATE_USERNAME}>
+            value={INTENTS.USER_UPDATE_PROFILE}>
             Save
           </Button>
         </div>
