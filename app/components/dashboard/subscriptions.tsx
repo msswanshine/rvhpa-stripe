@@ -1,76 +1,12 @@
-import type {
-  MetaFunction,
-  LoaderFunctionArgs,
-  ActionFunctionArgs,
-} from '@remix-run/node'
 import type { Plan } from '#app/modules/stripe/plans'
 import { useState } from 'react'
-import { Form, useLoaderData } from '@remix-run/react'
-import { redirect } from '@remix-run/node'
-import { requireSessionUser } from '#app/modules/auth/auth.server'
+import { Form } from '@remix-run/react'
 import { PLANS, PRICING_PLANS, INTERVALS, CURRENCIES } from '#app/modules/stripe/plans'
-import {
-  createSubscriptionCheckout,
-  createCustomerPortal,
-} from '#app/modules/stripe/queries.server'
-import { prisma } from '#app/utils/db.server'
-import { getLocaleCurrency } from '#app/utils/misc.server'
 import { INTENTS } from '#app/utils/constants/misc'
-import { ROUTE_PATH as LOGIN_PATH } from '#app/routes/auth+/login'
 import { Button } from '#app/components/ui/button'
+import { Subscription } from '#node_modules/@prisma/client/default'
 
-export const ROUTE_PATH = '/dashboard/membership' as const
-
-export const meta: MetaFunction = () => {
-  return [{ title: 'Remix SaaS - Billing' }]
-}
-
-export async function loader({ request }: LoaderFunctionArgs) {
-  const sessionUser = await requireSessionUser(request, {
-    redirectTo: LOGIN_PATH,
-  })
-
-  const subscription = await prisma.subscription.findUnique({
-    where: { userId: sessionUser.id },
-  })
-  const currency = getLocaleCurrency(request)
-
-  return { subscription, currency }
-}
-
-export async function action({ request }: ActionFunctionArgs) {
-  const sessionUser = await requireSessionUser(request, {
-    redirectTo: LOGIN_PATH,
-  })
-
-  const formData = await request.formData()
-  const intent = formData.get(INTENTS.INTENT)
-
-  if (intent === INTENTS.SUBSCRIPTION_CREATE_CHECKOUT) {
-    const planId = String(formData.get('planId'))
-    const planInterval = String(formData.get('planInterval'))
-    const checkoutUrl = await createSubscriptionCheckout({
-      userId: sessionUser.id,
-      planId,
-      planInterval,
-      request,
-    })
-    if (!checkoutUrl) return { success: false }
-    return redirect(checkoutUrl)
-  }
-  if (intent === INTENTS.SUBSCRIPTION_CREATE_CUSTOMER_PORTAL) {
-    const customerPortalUrl = await createCustomerPortal({
-      userId: sessionUser.id,
-    })
-    if (!customerPortalUrl) return { success: false }
-    return redirect(customerPortalUrl)
-  }
-
-  return {}
-}
-
-export default function DashboardBilling() {
-  const { subscription, currency } = useLoaderData<typeof loader>()
+export default function DashboardBilling({ subscription, currency }: { subscription: Subscription, currency: string }) {
 
   const [selectedPlanId, setSelectedPlanId] = useState<Plan>(
     (subscription?.planId as Plan) ?? PLANS.FREE,

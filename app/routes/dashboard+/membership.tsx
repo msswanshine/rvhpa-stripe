@@ -7,6 +7,9 @@ import { ROUTE_PATH as LOGIN_PATH } from '#app/routes/auth+/login'
 import { INTENTS } from '#app/utils/constants/misc'
 import { createSubscriptionCheckout, createCustomerPortal } from '#app/modules/stripe/queries.server'
 import { redirect, ActionFunctionArgs } from '@remix-run/node'
+import { prisma } from '#app/utils/db.server.ts'
+import { getLocaleCurrency } from '#app/utils/misc.server.ts'
+import { Subscription } from '#node_modules/@prisma/client/default'
 
 export const ROUTE_PATH = '/dashboard/membership' as const
 
@@ -56,11 +59,21 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export async function loader({ request }: LoaderFunctionArgs) {
+  const sessionUser = await requireSessionUser(request, {
+    redirectTo: LOGIN_PATH,
+  })
+
   const user = await requireUser(request)
-  return { user }
+
+  const subscription = await prisma.subscription.findUnique({
+    where: { userId: sessionUser.id },
+  })
+  const currency = getLocaleCurrency(request)
+
+  return { subscription, currency, user }
 }
 
-export default function DashboardMembership() {
+export default function DashboardMembership({ subscription, currency }: { subscription: Subscription, currency: string }) {
 
   return (
     <div className="flex h-full w-full px-6 py-8">
@@ -94,7 +107,7 @@ export default function DashboardMembership() {
           </Link>
         </div> */}
         <Outlet />
-        <DashboardBilling />
+        <DashboardBilling subscription={subscription} currency={currency} />
       </div>
     </div>
   )

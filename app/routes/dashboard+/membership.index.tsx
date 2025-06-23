@@ -225,6 +225,7 @@ export default function DashboardMembership() {
               BANANAS! Update your information here.
             </p>
           </div>
+          <div className="flex flex-col gap-4">Username</div>
           <Input
             placeholder="Username"
             autoComplete="off"
@@ -240,6 +241,7 @@ export default function DashboardMembership() {
               {username.errors.join(' ')}
             </p>
           )}
+          <div className="flex flex-col gap-4">Ushpa ID</div>
           <Input
             placeholder="Ushpa ID"
             autoComplete="off"
@@ -255,6 +257,7 @@ export default function DashboardMembership() {
               {ushpaId.errors.join(' ')}
             </p>
           )}
+          <div className="flex flex-col gap-4">First Name</div>
           <Input
             placeholder="First Name"
             autoComplete="off"
