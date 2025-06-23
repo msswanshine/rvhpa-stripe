@@ -225,54 +225,60 @@ export default function DashboardMembership() {
               BANANAS! Update your information here.
             </p>
           </div>
-          <div className="flex flex-col gap-4">Username</div>
-          <Input
-            placeholder="Username"
-            autoComplete="off"
-            defaultValue={user?.username ?? ''}
-            required
-            className={`w-80 bg-transparent ${
-              username.errors && 'border-destructive focus-visible:ring-destructive'
-            }`}
-            {...getInputProps(username, { type: 'text' })}
-          />
-          {username.errors && (
-            <p className="text-sm text-destructive dark:text-destructive-foreground">
-              {username.errors.join(' ')}
-            </p>
-          )}
-          <div className="flex flex-col gap-4">Ushpa ID</div>
-          <Input
-            placeholder="Ushpa ID"
-            autoComplete="off"
-            defaultValue={user?.ushpaId ?? ''}
-            required
-            className={`w-80 bg-transparent ${
-              ushpaId.errors && 'border-destructive focus-visible:ring-destructive'
-            }`}
-            {...getInputProps(ushpaId, { type: 'text' })}
-          />
-          {ushpaId.errors && (
-            <p className="text-sm text-destructive dark:text-destructive-foreground">
-              {ushpaId.errors.join(' ')}
-            </p>
-          )}
-          <div className="flex flex-col gap-4">First Name</div>
-          <Input
-            placeholder="First Name"
-            autoComplete="off"
-            defaultValue={user?.firstName ?? ''}
-            required
-            className={`w-80 bg-transparent ${
-              username.errors && 'border-destructive focus-visible:ring-destructive'
-            }`}
-            {...getInputProps(firstName, { type: 'text' })}
-          />
-          {firstName.errors && (
-            <p className="text-sm text-destructive dark:text-destructive-foreground">
-              {firstName.errors.join(' ')}
-            </p>
-          )}
+          <div className="flex flex-col">
+            <label htmlFor={username.id} className="mb-1 text-xs font-bold">Username</label>
+            <Input
+              placeholder="Username"
+              autoComplete="off"
+              defaultValue={user?.username ?? ''}
+              required
+              className={`w-80 bg-transparent ${
+                username.errors && 'border-destructive focus-visible:ring-destructive'
+              }`}
+              {...getInputProps(username, { type: 'text' })}
+            />
+            {username.errors && (
+              <p className="text-sm text-destructive dark:text-destructive-foreground">
+                {username.errors.join(' ')}
+              </p>
+            )}
+          </div>
+          <div className="flex flex-col">
+            <label htmlFor={ushpaId.id} className="mb-1 text-xs font-bold">USHPA ID</label>
+            <Input
+              placeholder="Ushpa ID"
+              autoComplete="off"
+              defaultValue={user?.ushpaId ?? ''}
+              required
+              className={`w-80 bg-transparent ${
+                ushpaId.errors && 'border-destructive focus-visible:ring-destructive'
+              }`}
+              {...getInputProps(ushpaId, { type: 'text' })}
+            />
+            {ushpaId.errors && (
+              <p className="text-sm text-destructive dark:text-destructive-foreground">
+                {ushpaId.errors.join(' ')}
+              </p>
+            )}
+          </div>
+          <div className="flex flex-col">
+            <label htmlFor={firstName.id} className="mb-1 text-xs font-bold">First Name</label>
+            <Input
+              placeholder="First Name"
+              autoComplete="off"
+              defaultValue={user?.firstName ?? ''}
+              required
+              className={`w-80 bg-transparent ${
+                username.errors && 'border-destructive focus-visible:ring-destructive'
+              }`}
+              {...getInputProps(firstName, { type: 'text' })}
+            />
+            {firstName.errors && (
+              <p className="text-sm text-destructive dark:text-destructive-foreground">
+                {firstName.errors.join(' ')}
+              </p>
+            )}
+          </div>
         </div>
         <div className="flex min-h-14 w-full items-center justify-between rounded-lg rounded-t-none border-t border-border bg-secondary px-6 dark:bg-card">
           <p className="text-sm font-normal text-primary/60">
